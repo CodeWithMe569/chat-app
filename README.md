@@ -39,7 +39,7 @@ This project focuses on clean system design, separation of concerns, and product
 
 ## 📂 Project Structure
 
-
+```
 chat-app/
 ├── backend/
 │   ├── src/
@@ -74,7 +74,7 @@ chat-app/
 │   └── package.json
 │
 └── README.md
-
+```
 
 
 
