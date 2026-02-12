@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const roomRoutes = require("./routes/roomRoutes")
 
 const connectDB = require("./config/db");
 
@@ -17,6 +18,7 @@ connectDB();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/rooms", roomRoutes)
 
 const PORT = process.env.PORT || 9000;
 
