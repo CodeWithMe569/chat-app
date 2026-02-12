@@ -38,7 +38,8 @@ exports.login = async (req, res) => {
         }
 
         const token = generateToken(user._id);
+        return res.status(200).json({ token });
     } catch (error) {
-        res.status(500).json({ err: error.message });
+        return res.status(500).json({ err: error.message });
     }
 }
