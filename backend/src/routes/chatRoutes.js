@@ -5,7 +5,7 @@ const auth = require("../middleware/auth.middleware")
 const {
   sendMessage,
   getMessages
-} = require("../controllers/messageController")
+} = require("../controllers/chatController")
 
 router.post("/message", auth, sendMessage)
 router.get("/message/:roomId", auth, getMessages)
