@@ -22,14 +22,30 @@ exports.sendMessage = async (req,res) => {
 }
 
 
-// Fetch Messages by Room
+// Fetch Messages by Room and mark as read for current user
 exports.getMessages = async (req,res) => {
   try {
     const { roomId } = req.params;
+    const userId = req.user.id;
+
+    // Mark all unread messages in this room that were sent by others as read
+    await Message.updateMany(
+      { room: roomId, sender: { $ne: userId }, read: false },
+      { $set: { read: true } }
+    );
 
     const messages = await Message.find({ room: roomId })
       .populate("sender", "username")
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: 1 });
+
+    // Notify all clients in the room that messages have been read by this user
+    const io = req.app.get("io");
+    if (io) {
+      io.to(roomId).emit("messages_read", {
+        roomId,
+        readerId: userId,
+      });
+    }
 
     return res.json(messages);
   } catch(err) {

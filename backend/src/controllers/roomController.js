@@ -1,4 +1,5 @@
 const Room = require("../models/Room")
+const Message = require("../models/Message")
 
 // Create Room
 exports.createRoom = async (req, res) => {
@@ -63,7 +64,23 @@ exports.getMyRooms = async (req, res) => {
       members: userId
     }).populate("members", "username")
 
-    return res.json(rooms)
+    // For each room, compute unread messages for this user
+    const roomsWithUnread = await Promise.all(
+      rooms.map(async (room) => {
+        const unreadCount = await Message.countDocuments({
+          room: room._id,
+          sender: { $ne: userId },
+          read: false
+        })
+
+        return {
+          ...room.toObject(),
+          unreadCount
+        }
+      })
+    )
+
+    return res.json(roomsWithUnread)
   } catch (err) {
     return res.status(500).json({ err: err.message })
   }

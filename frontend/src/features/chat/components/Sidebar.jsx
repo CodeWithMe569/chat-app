@@ -130,8 +130,14 @@ export default function Sidebar({ rooms, select, onRoomCreated, onJoinSuccess })
                 <div
                     key={r._id}
                     onClick={() => select(r)}
-                    className="p-2 mb-2 rounded hover:bg-slate-700 cursor-pointer">
-                    {r.name}
+                    className="p-2 mb-2 rounded hover:bg-slate-700 cursor-pointer flex items-center justify-between"
+                >
+                    <span>{r.name}</span>
+                    {r.unreadCount > 0 && (
+                        <span className="ml-2 inline-flex items-center justify-center rounded-full bg-red-600 text-white text-[11px] min-w-[20px] h-5 px-1">
+                            {r.unreadCount}
+                        </span>
+                    )}
                 </div>
             ))}
 

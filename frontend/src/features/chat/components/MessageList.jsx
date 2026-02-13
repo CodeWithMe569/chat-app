@@ -15,6 +15,11 @@ export default function MessageList({ messages, currentUserId }) {
                             <p className="text-white break-words">
                                 {m.content}
                             </p>
+                            {isOwnMessage && (
+                                <p className="text-[10px] text-slate-200 mt-1 text-right">
+                                    {m.read ? "Read" : "Sent"}
+                                </p>
+                            )}
                         </div>
                     </div>
                 )

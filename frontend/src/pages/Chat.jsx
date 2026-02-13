@@ -45,9 +45,43 @@ export default function Chat() {
                 }
                 return [...prevMessages, msg]
             })
+
+            // If message is not from current user and room is not active, bump unread count
+            if (msg.sender?._id && msg.sender._id !== currentUserId) {
+                setRooms(prevRooms =>
+                    prevRooms.map(r => {
+                        if (r._id === msg.room) {
+                            const current = r.unreadCount || 0
+                            // If this room is currently open, don't increase unread
+                            if (room && room._id === r._id) {
+                                return { ...r, unreadCount: 0 }
+                            }
+                            return { ...r, unreadCount: current + 1 }
+                        }
+                        return r
+                    })
+                )
+            }
+        }
+
+        const handleMessagesRead = ({ roomId, readerId }) => {
+            // When another user opens the room, mark our sent messages as read
+            setMessages(prevMessages =>
+                prevMessages.map(m => {
+                    if (
+                        m.room === roomId &&
+                        m.sender &&
+                        m.sender._id === currentUserId
+                    ) {
+                        return { ...m, read: true }
+                    }
+                    return m
+                })
+            )
         }
 
         socketRef.current.on("receive_message", handleReceiveMessage)
+        socketRef.current.on("messages_read", handleMessagesRead)
 
         fetchRooms()
             .then(data => {
@@ -60,6 +94,7 @@ export default function Chat() {
 
         return () => {
             socketRef.current.off("receive_message", handleReceiveMessage)
+            socketRef.current.off("messages_read", handleMessagesRead)
             socketRef.current.disconnect()
         }
 
@@ -72,6 +107,15 @@ export default function Chat() {
         // load history
         const history = await fetchMessages(r._id)
         setMessages(history)
+
+        // Clear unread count for this room locally
+        setRooms(prevRooms =>
+            prevRooms.map(roomItem =>
+                roomItem._id === r._id
+                    ? { ...roomItem, unreadCount: 0 }
+                    : roomItem
+            )
+        )
     }
 
 
