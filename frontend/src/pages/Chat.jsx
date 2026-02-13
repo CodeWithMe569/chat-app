@@ -4,9 +4,10 @@ import MainLayout from "../layouts/MainLayout"
 import Sidebar from "../features/chat/components/Sidebar"
 import MessageList from "../features/chat/components/MessageList"
 import ChatInput from "../features/chat/components/ChatInput"
+
 import { connectSocket } from "../services/socket"
 import { fetchRooms } from "../services/api"
-
+import { fetchMessages } from "../services/api"
 
 export default function Chat() {
 
@@ -38,10 +39,15 @@ export default function Chat() {
 
     }, [])
 
-    const selectRoom = (r) => {
+    const selectRoom = async (r) => {
+
         setRoom(r)
         socketRef.current.emit("join_room", r._id)
+        // load history
+        const history = await fetchMessages(r._id)
+        setMessages(history)
     }
+
 
     const send = (text) => {
         socketRef.current.emit("send_message", {

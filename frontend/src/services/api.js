@@ -31,3 +31,19 @@ export async function fetchRooms() {
 
   return res.json()
 }
+
+export async function fetchMessages(roomId) {
+
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(
+    `http://localhost:9000/api/chat/message/${roomId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  )
+
+  return res.json()
+}
