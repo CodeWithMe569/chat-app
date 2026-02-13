@@ -23,9 +23,14 @@ export default function Chat() {
             setMessages(m => [...m, msg])
         })
 
-        fetchRooms().then(data => {
-            setRooms(data)
-        })
+        fetchRooms()
+            .then(data => {
+                console.log("Fetched rooms:", data)
+                setRooms(data)
+            })
+            .catch(err => {
+                console.error("Error fetching rooms:", err)
+            })
 
         return () => {
             socketRef.current.disconnect()

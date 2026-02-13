@@ -4,12 +4,13 @@ const Room = require("../models/Room")
 exports.createRoom = async (req, res) => {
   try {
     const userId = req.user.id
-    const { members } = req.body
+    const { name, members } = req.body
 
     // Ensure creator included
     const uniqueMembers = [...new Set([userId, ...members])]
 
     const room = await Room.create({
+      name,
       members: uniqueMembers,
       createdBy: userId
     })
