@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Plus, LogIn } from "lucide-react"
+import { toast, ToastContainer } from "react-toastify"
 import { createRoom, joinRoom as joinRoomApi } from "../../../services/api"
 import CreateRoomModal from "./CreateRoomModal"
 import JoinRoomModal from "./JoinRoomModal"
@@ -56,11 +57,13 @@ export default function Sidebar({ rooms, select, onRoomCreated, onJoinSuccess })
                 onRoomCreated(newRoom)
             }
 
+            toast.success(`Room "${trimmed}" created successfully!`)
             setIsCreateModalOpen(false)
             setRoomName("")
         } catch (err) {
             console.error("Error creating room:", err)
             setCreateError("Failed to create room. Please try again.")
+            toast.error("Failed to create room. Please try again.")
         } finally {
             setIsCreating(false)
         }
@@ -82,6 +85,7 @@ export default function Sidebar({ rooms, select, onRoomCreated, onJoinSuccess })
 
             if (result.err) {
                 setJoinError(result.err || "Failed to join room.")
+                toast.error(result.err || "Failed to join room.")
                 return
             }
 
@@ -89,11 +93,13 @@ export default function Sidebar({ rooms, select, onRoomCreated, onJoinSuccess })
                 await onJoinSuccess(result)
             }
 
+            toast.success(`Successfully joined room "${result.name || trimmedId}"!`)
             setIsJoinModalOpen(false)
             setJoinRoomId("")
         } catch (err) {
             console.error("Error joining room:", err)
             setJoinError("Failed to join room. Please try again.")
+            toast.error("Failed to join room. Please try again.")
         } finally {
             setIsJoining(false)
         }
@@ -168,6 +174,8 @@ export default function Sidebar({ rooms, select, onRoomCreated, onJoinSuccess })
                     onSubmit={handleJoinRoom}
                 />
             )}
+
+            <ToastContainer />
 
         </div>
     )

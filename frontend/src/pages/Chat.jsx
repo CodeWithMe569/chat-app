@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { jwtDecode } from "jwt-decode"
+import { useNavigate } from "react-router-dom"
 
 import MainLayout from "../layouts/MainLayout"
 import Sidebar from "../features/chat/components/Sidebar"
@@ -7,12 +8,16 @@ import MessageList from "../features/chat/components/MessageList"
 import ChatInput from "../features/chat/components/ChatInput"
 
 import { connectSocket } from "../services/socket"
-import { fetchRooms } from "../services/api"
+import { fetchRooms, leaveRoom as leaveRoomApi, deleteRoom as deleteRoomApi } from "../services/api"
 import { fetchMessages } from "../services/api"
 import { sendMessage } from "../services/api"
+import { Settings } from "lucide-react"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "../components/ui/DropdownMenu"
+import { toast, ToastContainer } from "react-toastify"
 
 export default function Chat() {
 
+    const navigate = useNavigate()
     const socketRef = useRef(null)
     const [room, setRoom] = useState(null)
     const [messages, setMessages] = useState([])
@@ -129,6 +134,36 @@ export default function Chat() {
         }
     }
 
+    const leaveRoom = async (roomId) => {
+        try {
+            await leaveRoomApi(roomId)
+            setRooms(prev => prev.filter(r => r._id !== roomId))
+            setRoom(null)
+            socketRef.current.emit("leave_room", roomId)
+            setMessages([])
+        } catch (err) {
+            console.error("Error leaving room:", err)
+        }
+    }
+
+    const copyRoomId = (roomId) => {
+        navigator.clipboard.writeText(roomId)
+        toast.success("Room ID copied to clipboard")
+    }
+
+    const deleteRoom = async (roomId) => {
+        try {
+            await deleteRoomApi(roomId)
+            setRooms(prev => prev.filter(r => r._id !== roomId))
+            setRoom(null)
+            toast.success("Room deleted successfully")
+        }
+        catch (err) {
+            console.error("Error deleting room:", err)
+            toast.error("Failed to delete room. Please try again.")
+        }
+    }
+
     return (
         <MainLayout>
 
@@ -157,7 +192,20 @@ export default function Chat() {
 
                 {room && (
                     <div className="bg-slate-800 p-4 border-b border-slate-700">
-                        <h1 className="text-white font-semibold text-lg">{room.name}</h1>
+                        <h1 className="text-white font-semibold text-lg flex items-center justify-between">
+                            {room.name}
+                            {/* add a dropdown menu for the room settings */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="cursor-pointer"><Settings /></button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuItem onClick={() => copyRoomId(room._id)}>Copy Room ID</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => leaveRoom(room._id)}>Leave Room</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => deleteRoom(room._id)}>Delete Room</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </h1>
                     </div>
                 )}
 
@@ -166,6 +214,8 @@ export default function Chat() {
                 {room && <ChatInput send={send} />}
 
             </div>
+
+            <ToastContainer />
 
         </MainLayout>
     )

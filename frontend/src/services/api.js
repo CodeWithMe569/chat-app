@@ -62,6 +62,36 @@ export async function joinRoom(roomId) {
   return res.json()
 }
 
+// leave room api
+export async function leaveRoom(roomId) {
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(`${BASE}/api/rooms/leave`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ roomId })
+  })
+
+  return res.json()
+}
+
+export async function deleteRoom(roomId) {
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(`${BASE}/api/rooms/${roomId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return res.json()
+}
+
 export async function fetchMessages(roomId) {
 
   const token = localStorage.getItem("token")
