@@ -78,59 +78,86 @@ chat-app/
 
 
 
-## ⚙️ Setup Instructions
+## ⚙️ Installation & Setup
 
-### Clone Repository
+### 1. Clone Repository
 
 ```bash
-git clone <repo-url>
+git clone <repo-url> chat-app
 cd chat-app
 ```
 
 
 
-### Backend Setup
+### 2. Backend Setup (API + WebSocket server)
 
 ```bash
 cd backend
 npm install
 ```
 
-Create `.env`
+Create a `.env` file in the `backend` folder:
 
-```
-PORT=5000
-MONGO_URI=your_mongo_uri
-JWT_SECRET=your_secret
+```env
+PORT=9000
+MONGO_URI=<your_mongo_connection_string>
+JWT_SECRET=<your_jwt_secret>
 ```
 
-Run backend:
+Start the backend (Node + Socket.io):
 
 ```bash
 npm run dev
 ```
 
+By default the backend will run at `http://localhost:9000`.
 
 
-### Frontend Setup
+
+### 3. Frontend Setup (React client)
 
 ```bash
 cd frontend
 npm install
 ```
 
-Create `.env`
+Create a `.env` file in the `frontend` folder:
 
-```
-VITE_API_URL=http://localhost:5000
+```env
+VITE_API_URL=http://localhost:9000
 ```
 
-Run frontend:
+Start the frontend (Vite dev server):
 
 ```bash
 npm run dev
 ```
 
+Vite will print a URL like `http://localhost:5173` (or similar). Open that in your browser.
+
+
+
+## ▶️ Usage
+
+1. **Start both servers**
+   - Backend: from `backend/` → `npm run dev`
+   - Frontend: from `frontend/` → `npm run dev`
+
+2. **Register & login**
+   - Visit the frontend URL (e.g. `http://localhost:5173`).
+   - Create a new account via the registration form.
+   - Log in; a JWT token is stored in `localStorage` and used automatically for API + WebSocket.
+
+3. **Create or join rooms**
+   - Use the sidebar to:
+     - Create a new room with the **+** button.
+     - Join an existing room by ID with the **join** button.
+
+4. **Chat in real time**
+   - Select a room to load its message history.
+   - Send messages; they appear instantly on all connected clients in that room.
+   - Unread badges in the sidebar show new messages for rooms you haven’t opened yet.
+   - Read receipts indicate when other users have opened the room and seen your messages.
 
 
 ## 🔌 Environment Variables
@@ -166,7 +193,6 @@ npm run dev
 - Typing indicators
 - Message reactions
 - File uploads
-- Read receipts
 - End-to-end encryption
 - Deployment pipeline
 
