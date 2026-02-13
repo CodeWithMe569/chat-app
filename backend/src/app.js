@@ -8,6 +8,7 @@ const { Server } = require("socket.io");
 const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const roomRoutes = require("./routes/roomRoutes")
+const initSocket = require("./socket/socket")
 
 const connectDB = require("./config/db");
 
@@ -31,19 +32,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/rooms", roomRoutes)
 
-io.on("connection", (socket) => {
-    console.log("A user connected: " + socket.id);
-
-    // join a room
-    socket.on("join_room", (roomId) => {
-        socket.join(roomId);
-        console.log(`User ${socket.id} joined room ${roomId}`);
-    })
-
-    socket.on("disconnect", () => {
-        console.log("A user disconnected: " + socket.id);
-    });
-});
+initSocket(io)
 
 const PORT = process.env.PORT || 9000;
 
