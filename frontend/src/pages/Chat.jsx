@@ -33,14 +33,6 @@ export default function Chat() {
 
     }, [])
 
-
-    fetchRooms().then(data => {
-        console.log("ROOMS:", data)
-        setRooms(data)
-    })
-
-
-
     const selectRoom = (r) => {
         setRoom(r)
         socketRef.current.emit("join_room", r._id)
