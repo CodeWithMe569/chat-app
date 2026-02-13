@@ -19,3 +19,15 @@ export async function register(data) {
 
     return res.json();
 }
+
+export async function fetchRooms() {
+  const token = localStorage.getItem("token")
+
+  const res = await fetch("http://localhost:9000/api/rooms", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return res.json()
+}

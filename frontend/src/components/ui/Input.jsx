@@ -5,7 +5,7 @@ export default function Input({
   ...props
 }) {
   return (
-    <div className="space-y-1">
+    <div className={`space-y-1 w-full ${className}`}>
 
       {label && (
         <label className="text-sm text-slate-300">
@@ -21,7 +21,6 @@ export default function Input({
           focus:outline-none
           focus:ring-2
           focus:ring-indigo-500
-          ${className}
         `}
       />
 

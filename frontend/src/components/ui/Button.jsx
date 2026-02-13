@@ -1,6 +1,7 @@
 export default function Button({
   children,
   loading=false,
+  full=true,
   className="",
   ...props
 }) {
@@ -9,12 +10,12 @@ export default function Button({
       {...props}
       disabled={loading}
       className={`
-        w-full py-2 rounded-lg
+        ${full ? "w-full" : ""}
+        py-2 rounded-lg
         bg-indigo-600
         hover:bg-indigo-700
         transition
         disabled:opacity-60
-        cursor-pointer
         ${className}
       `}
     >
