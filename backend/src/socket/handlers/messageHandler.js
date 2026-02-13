@@ -2,20 +2,12 @@ const Message = require("../../models/Message")
 
 module.exports = (io, socket) => {
 
-  socket.on("send_message", async ({ room, content }) => {
+  socket.on("send_message", (message) => {
 
     try {
-
-      // Save to DB
-      const message = await Message.create({
-        sender: socket.user.id,
-        room,
-        content
-      })
-
-      // Broadcast saved message
-      io.to(room).emit("receive_message", message)
-
+      // Just broadcast the message to all clients in the room
+      // The message was already saved by the API before this event
+      io.to(message.room).emit("receive_message", message)
     } catch (err) {
       console.error(err)
     }

@@ -12,6 +12,9 @@ exports.sendMessage = async (req,res) => {
       content
     });
 
+    // Populate sender details before sending response
+    await message.populate("sender", "username");
+
     return res.status(201).json(message);
   } catch(err) {
     return res.status(500).json({ err: err.message });

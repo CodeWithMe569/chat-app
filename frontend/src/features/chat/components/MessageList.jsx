@@ -1,13 +1,24 @@
-export default function MessageList({ messages }) {
+export default function MessageList({ messages, currentUserId }) {
 
     return (
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
 
-            {messages.map(m => (
-                <div key={m._id} className="mb-2 text-white">
-                    {m.content}
-                </div>
-            ))}
+            {messages.map(m => {
+                const isOwnMessage = m.sender && m.sender._id === currentUserId
+                
+                return (
+                    <div key={m._id} className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-xs ${isOwnMessage ? 'bg-indigo-600' : 'bg-slate-700'} rounded-lg p-3`}>
+                            <p className="text-xs text-slate-300 mb-1">
+                                {m.sender?.username}
+                            </p>
+                            <p className="text-white break-words">
+                                {m.content}
+                            </p>
+                        </div>
+                    </div>
+                )
+            })}
 
         </div>
     )

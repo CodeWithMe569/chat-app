@@ -47,3 +47,24 @@ export async function fetchMessages(roomId) {
 
   return res.json()
 }
+
+export async function sendMessage(roomId, content) {
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(
+    `http://localhost:9000/api/chat/message`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        room: roomId,
+        content
+      })
+    }
+  )
+
+  return res.json()
+}
