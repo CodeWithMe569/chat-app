@@ -88,7 +88,26 @@ export default function Chat() {
     return (
         <MainLayout>
 
-            <Sidebar rooms={rooms} select={selectRoom} />
+            <Sidebar
+                rooms={rooms}
+                select={selectRoom}
+                onRoomCreated={(newRoom) => {
+                    setRooms(prev => [...prev, newRoom])
+                }}
+                onJoinSuccess={async (joinedRoom) => {
+                    setRooms(prev => {
+                        const exists = prev.some(r => r._id === joinedRoom._id)
+                        return exists ? prev : [...prev, joinedRoom]
+                    })
+
+                    setRoom(joinedRoom)
+                    if (socketRef.current) {
+                        socketRef.current.emit("join_room", joinedRoom._id)
+                    }
+                    const history = await fetchMessages(joinedRoom._id)
+                    setMessages(history)
+                }}
+            />
 
             <div className="flex flex-col flex-1">
 

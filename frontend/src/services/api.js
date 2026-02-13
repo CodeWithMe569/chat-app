@@ -23,10 +23,40 @@ export async function register(data) {
 export async function fetchRooms() {
   const token = localStorage.getItem("token")
 
-  const res = await fetch("http://localhost:9000/api/rooms", {
+  const res = await fetch(`${BASE}/api/rooms`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
+  })
+
+  return res.json()
+}
+
+export async function createRoom(name) {
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(`${BASE}/api/rooms`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ name })
+  })
+
+  return res.json()
+}
+
+export async function joinRoom(roomId) {
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(`${BASE}/api/rooms/join`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ roomId })
   })
 
   return res.json()
@@ -37,7 +67,7 @@ export async function fetchMessages(roomId) {
   const token = localStorage.getItem("token")
 
   const res = await fetch(
-    `http://localhost:9000/api/chat/message/${roomId}`,
+    `${BASE}/api/chat/message/${roomId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`
@@ -52,7 +82,7 @@ export async function sendMessage(roomId, content) {
   const token = localStorage.getItem("token")
 
   const res = await fetch(
-    `http://localhost:9000/api/chat/message`,
+    `${BASE}/api/chat/message`,
     {
       method: "POST",
       headers: {

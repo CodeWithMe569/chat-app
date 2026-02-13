@@ -16,6 +16,7 @@ export default function Button({
         hover:bg-indigo-700
         transition
         disabled:opacity-60
+        cursor-pointer
         ${className}
       `}
     >
