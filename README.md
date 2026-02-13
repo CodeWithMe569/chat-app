@@ -121,11 +121,6 @@ cd frontend
 npm install
 ```
 
-Create a `.env` file in the `frontend` folder:
-
-```env
-VITE_API_URL=http://localhost:9000
-```
 
 Start the frontend (Vite dev server):
 
